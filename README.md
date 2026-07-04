@@ -1,0 +1,211 @@
+# Sistema de Taller Mecanico
+
+Sistema local para administracion de un taller mecanico, disenado para operar en red interna desde Android, computadoras de escritorio y un servidor local instalado en una PC comun del taller.
+
+El proyecto arrancara como monorepo para compartir tipos, validaciones y componentes entre la app web, la API, la app Android y la app de escritorio.
+
+## Objetivo
+
+Construir una plataforma local, mantenible y actualizable para gestionar:
+
+- Clientes
+- Vehiculos
+- Empleados
+- Proveedores
+- Ordenes de trabajo
+- Cotizaciones
+- Presupuestos
+- Facturas
+- Reportes
+- Usuarios, roles y permisos
+
+La primera version servira como prototipo funcional y el alcance crecera conforme llegue retroalimentacion real del taller.
+
+## Arquitectura General
+
+```text
+Dispositivos Android         App Capacitor
+Computadoras de escritorio   App Tauri o navegador
+Tablets / laptops            Navegador local
+        |
+        | Red local del taller
+        v
+Servidor local del taller
+        |
+        +-- Frontend web
+        +-- API NestJS
+        +-- PostgreSQL
+```
+
+El servidor local se ejecutara en una PC del taller. Los clientes se conectaran por IP local, por ejemplo:
+
+```text
+http://192.168.1.50
+```
+
+## Stack Del Proyecto
+
+### Monorepo
+
+**pnpm workspaces**
+
+Gestiona varias aplicaciones y paquetes dentro del mismo repositorio. Esto permite compartir codigo entre frontend, backend, base de datos, escritorio y movil sin duplicar logica.
+
+### Frontend
+
+**Next.js + React + TypeScript**
+
+Interfaz principal del sistema. Se usara como aplicacion web responsive compatible con escritorio, tablets y Android. La logica de negocio fuerte vivira en la API para mantener la app cliente ligera y facil de empaquetar.
+
+Consideracion importante: para que el mismo frontend pueda usarse con Capacitor y Tauri, evitaremos depender de funcionalidades que requieran un servidor Next.js dedicado para la experiencia cliente. El frontend consumira la API de NestJS.
+
+### UI
+
+**Tailwind CSS + shadcn/ui**
+
+Tailwind sera la base de estilos. shadcn/ui aportara componentes accesibles y personalizables para construir pantallas administrativas densas, claras y consistentes.
+
+### Backend
+
+**NestJS + TypeScript**
+
+API central del sistema. Contendra reglas de negocio, autenticacion, autorizacion, validaciones, modulos de dominio y acceso a datos mediante Prisma.
+
+### Base De Datos
+
+**PostgreSQL**
+
+Base de datos relacional para soportar operaciones multiusuario, reportes, historial, integridad transaccional y crecimiento del sistema.
+
+En desarrollo y despliegue local se levantara mediante Docker Compose.
+
+### ORM Y Migraciones
+
+**Prisma + Prisma Migrate**
+
+Prisma definira el modelo de datos, generara el cliente de base de datos y administrara migraciones versionadas. Las migraciones seran parte central del proceso de actualizacion.
+
+### Autenticacion Y Permisos
+
+**JWT + roles/permisos**
+
+El sistema tendra usuarios autenticados con JWT. Desde el inicio se contemplan roles como:
+
+- Administrador
+- Tecnico
+
+Mas adelante podran agregarse roles como recepcion, almacen, caja o supervisor.
+
+### Android
+
+**Capacitor**
+
+Empaquetara el frontend como app Android instalable. La app se conectara al servidor local del taller mediante la red interna.
+
+### Escritorio
+
+**Tauri**
+
+Empaquetara el frontend como app de escritorio para Windows. Se prefiere Tauri sobre Electron por ser mas ligero y usar el WebView del sistema.
+
+Electron queda como alternativa si en el futuro aparece una necesidad especifica que Tauri no cubra.
+
+### Actualizaciones De Escritorio
+
+**Tauri Updater Plugin**
+
+Permitira un flujo de actualizacion tipo:
+
+```text
+Actualizacion disponible -> Descargar -> Instalar -> Reiniciar app
+```
+
+Para esto el proyecto necesitara:
+
+- Versionado SemVer
+- Builds firmados
+- Un canal de releases
+- Un endpoint o manifiesto de actualizacion
+- Control de compatibilidad con la API y la base de datos
+
+### Despliegue Local
+
+**Docker Compose**
+
+Usado para levantar servicios del sistema sin instalar cada dependencia manualmente en la PC del taller.
+
+Servicios previstos:
+
+- PostgreSQL
+- API NestJS
+- Frontend web
+- Herramientas administrativas opcionales, como pgAdmin
+
+### Releases Y Automatizacion
+
+**GitHub Actions + GitHub Releases**
+
+GitHub Actions se usara para validar builds, ejecutar pruebas y generar artefactos. GitHub Releases podra servir como canal inicial para distribuir:
+
+- Instaladores Tauri
+- APKs de Android
+- Imagenes Docker versionadas
+- Notas de version
+
+### Backups
+
+**pg_dump**
+
+Antes de actualizaciones importantes se deberan generar respaldos de PostgreSQL. Esto sera obligatorio antes de ejecutar migraciones destructivas o cambios mayores.
+
+## Estructura Inicial
+
+```text
+SistemaTallerMecanico/
+  apps/
+    web/        Frontend Next.js
+    api/        Backend NestJS
+    mobile/     Envoltura Android con Capacitor
+    desktop/    Envoltura de escritorio con Tauri
+  packages/
+    database/   Prisma schema, migraciones y cliente
+    shared/     Tipos, DTOs y validaciones compartidas
+    ui/         Componentes compartidos
+  docker/       Configuracion auxiliar de despliegue
+  scripts/      Automatizaciones del proyecto
+```
+
+## Flujo De Desarrollo Esperado
+
+1. Desarrollar la API, frontend y base de datos en la maquina de desarrollo.
+2. Probar PostgreSQL y servicios locales con Docker Compose.
+3. Empaquetar escritorio con Tauri.
+4. Empaquetar Android con Capacitor.
+5. Publicar versiones en GitHub Releases.
+6. Actualizar el servidor local del taller con Docker Compose.
+7. Actualizar clientes de escritorio y Android desde el canal de releases.
+
+## Comandos Previstos
+
+Estos comandos quedaran activos cuando instalemos dependencias y generemos las aplicaciones reales:
+
+```bash
+pnpm install
+pnpm dev
+pnpm build
+pnpm lint
+pnpm test
+pnpm docker:up
+pnpm docker:down
+```
+
+## Variables De Entorno
+
+Usar `.env.example` como referencia para crear `.env` local.
+
+Nunca se deben subir secretos reales al repositorio.
+
+## Estado Actual
+
+Scaffold inicial del repositorio. Todavia no se han generado las aplicaciones con sus CLIs ni instalado dependencias.
+

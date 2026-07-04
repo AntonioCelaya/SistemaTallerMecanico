@@ -1,0 +1,14 @@
+{
+  "name": "@taller/shared",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Tipos, DTOs y validaciones compartidas.",
+  "main": "src/index.ts",
+  "scripts": {
+    "build": "tsc --noEmit",
+    "lint": "eslint \"src/**/*.ts\"",
+    "test": "echo \"No tests configured yet for @taller/shared\"",
+    "format": "prettier --write ."
+  }
+}
+

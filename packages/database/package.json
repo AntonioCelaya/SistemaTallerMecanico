@@ -1,0 +1,16 @@
+{
+  "name": "@taller/database",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Schema Prisma, migraciones y acceso a datos compartido.",
+  "scripts": {
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:deploy": "prisma migrate deploy",
+    "db:studio": "prisma studio",
+    "lint": "echo \"No lint configured yet for @taller/database\"",
+    "test": "echo \"No tests configured yet for @taller/database\"",
+    "format": "prisma format"
+  }
+}
+

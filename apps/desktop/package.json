@@ -1,0 +1,13 @@
+{
+  "name": "@taller/desktop",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Envoltura de escritorio con Tauri.",
+  "scripts": {
+    "dev": "tauri dev",
+    "build": "tauri build",
+    "test": "echo \"No tests configured yet for @taller/desktop\"",
+    "format": "prettier --write ."
+  }
+}
+
