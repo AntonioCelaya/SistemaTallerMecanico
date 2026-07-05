@@ -4,7 +4,7 @@
   "private": true,
   "description": "Monorepo para sistema local de administracion de taller mecanico.",
   "license": "UNLICENSED",
-  "packageManager": "pnpm@10.0.0",
+  "packageManager": "pnpm@11.7.0",
   "engines": {
     "node": ">=24.0.0",
     "pnpm": ">=10.0.0"
@@ -23,4 +23,3 @@
     "db:studio": "pnpm --filter @taller/database db:studio"
   }
 }
-
