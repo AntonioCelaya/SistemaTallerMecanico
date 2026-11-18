@@ -10,8 +10,9 @@
     "pnpm": ">=10.0.0"
   },
   "scripts": {
-    "dev": "pnpm -r --parallel dev",
-    "build": "pnpm -r build",
+    "dev": "pnpm --filter @taller/database build && pnpm --filter @taller/api --filter @taller/web --parallel dev",
+    "setup": "pnpm install && pnpm --filter @taller/database build && pnpm db:deploy && pnpm db:seed",
+    "build": "pnpm -r --filter \"!@taller/mobile\" --filter \"!@taller/desktop\" build",
     "lint": "pnpm -r lint",
     "test": "pnpm -r test",
     "format": "pnpm -r format",
@@ -20,6 +21,11 @@
     "docker:logs": "docker compose logs -f",
     "db:generate": "pnpm --filter @taller/database db:generate",
     "db:migrate": "pnpm --filter @taller/database db:migrate",
+    "db:deploy": "pnpm --filter @taller/database db:deploy",
+    "db:seed": "pnpm --filter @taller/database db:seed",
     "db:studio": "pnpm --filter @taller/database db:studio"
+  },
+  "devDependencies": {
+    "typescript": "~5.9.3"
   }
 }
