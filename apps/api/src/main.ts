@@ -9,8 +9,10 @@ import { ValidationPipe } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 
-// Direcciones privadas de red local (192.168.x.x, 10.x.x.x, 172.16-31.x.x).
-const ORIGEN_RED_LOCAL = /^https?:\/\/(192\.168\.\d+\.\d+|10\.\d+\.\d+\.\d+|172\.(1[6-9]|2\d|3[01])\.\d+\.\d+)(:\d+)?$/;
+// Direcciones privadas de red local (192.168.x.x, 10.x.x.x, 172.16-31.x.x)
+// y de la red privada Tailscale (100.64-127.x.x y nombres *.ts.net) para el acceso remoto.
+const ORIGEN_RED_LOCAL =
+  /^https?:\/\/(192\.168\.\d+\.\d+|10\.\d+\.\d+\.\d+|172\.(1[6-9]|2\d|3[01])\.\d+\.\d+|100\.(6[4-9]|[7-9]\d|1[01]\d|12[0-7])\.\d+\.\d+|[a-z0-9-]+(\.[a-z0-9-]+)*\.ts\.net)(:\d+)?$/i;
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

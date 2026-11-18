@@ -12,7 +12,8 @@ const nextConfig: NextConfig = {
   // Exportacion estatica: el mismo build sirve para navegador, Capacitor (Android) y Tauri (escritorio).
   output: "export",
   transpilePackages: ["@taller/shared"],
-  allowedDevOrigins: ipsLocales,
+  // "*.ts.net" cubre el nombre de la PC dentro de la red privada Tailscale.
+  allowedDevOrigins: [...ipsLocales, "*.ts.net"],
 };
 
 export default nextConfig;

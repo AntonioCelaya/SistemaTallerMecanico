@@ -217,6 +217,20 @@ por ejemplo `http://192.168.1.50:3000`. La IP se consulta con `ipconfig` (linea 
 La API acepta automaticamente direcciones de red privada (192.168.x.x, 10.x.x.x, 172.16-31.x.x);
 cualquier otro origen debe agregarse a `CORS_ORIGINS` en `.env`. Windows debe permitir a Node.js en el firewall.
 
+### Acceso remoto con Tailscale
+
+Para entrar desde fuera del taller sin exponer el sistema en internet se usa [Tailscale](https://tailscale.com),
+una red privada entre los dispositivos autorizados:
+
+1. Instalar Tailscale en el servidor e iniciar sesion.
+2. Instalar la app Tailscale en cada celular o computadora e iniciar sesion con la misma cuenta
+   (o invitar a otros usuarios desde el panel de Tailscale).
+3. Entrar a `http://<nombre-del-servidor>.<tailnet>.ts.net:3000` o a `http://100.x.x.x:3000`
+   (se consultan con `tailscale status`).
+
+La API ya acepta las direcciones de Tailscale (100.64.0.0/10 y `*.ts.net`). La red Tailscale aparece en Windows como
+red **Privada**, asi que Node.js debe estar permitido en el firewall tambien para redes privadas.
+
 ## Comandos
 
 ```bash
