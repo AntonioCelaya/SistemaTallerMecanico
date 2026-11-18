@@ -1,6 +1,7 @@
 import { Module } from "@nestjs/common";
 import { APP_GUARD } from "@nestjs/core";
 import { JwtModule } from "@nestjs/jwt";
+import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 import { AuthGuard } from "./auth/auth.guard";
 import { AuthModule } from "./auth/auth.module";
 import { RolesGuard } from "./auth/roles.guard";
@@ -20,6 +21,8 @@ import { VehiculosModule } from "./vehiculos/vehiculos.module";
         return { secret, signOptions: { expiresIn: (process.env.JWT_EXPIRES_IN ?? "8h") as never } };
       },
     }),
+    // Limite general por IP; el login tiene uno mas estricto en AuthController.
+    ThrottlerModule.forRoot([{ ttl: 60_000, limit: 300 }]),
     PrismaModule,
     AuthModule,
     UsuariosModule,
@@ -28,6 +31,7 @@ import { VehiculosModule } from "./vehiculos/vehiculos.module";
   ],
   controllers: [HealthController],
   providers: [
+    { provide: APP_GUARD, useClass: ThrottlerGuard },
     // Todas las rutas requieren sesion salvo las marcadas con @Public().
     { provide: APP_GUARD, useClass: AuthGuard },
     { provide: APP_GUARD, useClass: RolesGuard },

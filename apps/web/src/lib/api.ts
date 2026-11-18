@@ -4,13 +4,15 @@ const CLAVE_TOKEN = "taller.token";
 const CLAVE_USUARIO = "taller.usuario";
 
 /**
- * URL de la API. Por defecto usa el mismo equipo que sirve la web en el puerto 4000,
- * asi funciona igual desde la PC servidor (localhost) que desde otro dispositivo de la red.
+ * URL de la API.
+ * - Si la web se abre en el puerto 3000 (red local), la API esta en el mismo equipo en el puerto 4000.
+ * - Si se abre a traves de un enlace publico o proxy (puerto estandar), la API esta en la ruta /api.
  */
 export function urlApi(): string {
   if (process.env.NEXT_PUBLIC_API_URL) return process.env.NEXT_PUBLIC_API_URL;
   if (typeof window === "undefined") return "http://localhost:4000";
-  return `${window.location.protocol}//${window.location.hostname}:4000`;
+  const { protocol, hostname, port, origin } = window.location;
+  return port === "3000" ? `${protocol}//${hostname}:4000` : `${origin}/api`;
 }
 
 export function guardarSesion(token: string, usuario: UsuarioSesion) {
