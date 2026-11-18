@@ -258,6 +258,12 @@ Para dejar de publicarlo: `tailscale funnel reset`.
 En Windows tambien se puede hacer con doble clic en `scripts\publicar-en-internet.cmd` y `scripts\quitar-de-internet.cmd`.
 Al quitarlo de internet el sistema sigue funcionando en la red local y para los dispositivos con la app Tailscale.
 
+Para todo en un solo paso:
+
+- `scripts\encender-todo.cmd`: abre Docker, levanta la base de datos, publica el enlace y arranca el sistema.
+- `scripts\apagar-todo.cmd`: quita el enlace, detiene el sistema y la base de datos, cierra Docker Desktop y
+  apaga WSL para liberar la memoria. Los datos se conservan.
+
 ## Seguridad
 
 - Contrasenas cifradas con bcrypt; minimo 10 caracteres con letras y numeros.
