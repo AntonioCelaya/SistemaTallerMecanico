@@ -212,8 +212,10 @@ Requisitos: Node.js 24 o superior, pnpm 11 y Docker Desktop.
 - Web: http://localhost:3000 (iniciar sesion con `SEED_ADMIN_EMAIL` / `SEED_ADMIN_PASSWORD`)
 - API: http://localhost:4000 (comprobacion de salud en `/health`)
 
-Desde otro dispositivo de la red se entra con la IP del servidor, por ejemplo `http://192.168.1.50:3000`.
-Esa direccion debe agregarse a `CORS_ORIGINS` en `.env`.
+Desde un celular u otra computadora conectada a la misma red se entra con la IP del servidor,
+por ejemplo `http://192.168.1.50:3000`. La IP se consulta con `ipconfig` (linea "Direccion IPv4" del Wi-Fi o Ethernet).
+La API acepta automaticamente direcciones de red privada (192.168.x.x, 10.x.x.x, 172.16-31.x.x);
+cualquier otro origen debe agregarse a `CORS_ORIGINS` en `.env`. Windows debe permitir a Node.js en el firewall.
 
 ## Comandos
 

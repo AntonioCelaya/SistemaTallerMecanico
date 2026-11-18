@@ -9,11 +9,18 @@ import { ValidationPipe } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 
+// Direcciones privadas de red local (192.168.x.x, 10.x.x.x, 172.16-31.x.x).
+const ORIGEN_RED_LOCAL = /^https?:\/\/(192\.168\.\d+\.\d+|10\.\d+\.\d+\.\d+|172\.(1[6-9]|2\d|3[01])\.\d+\.\d+)(:\d+)?$/;
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  const origenesPermitidos = (process.env.CORS_ORIGINS ?? "http://localhost:3000").split(",").map((o) => o.trim());
   app.enableCors({
-    origin: (process.env.CORS_ORIGINS ?? "http://localhost:3000").split(",").map((o) => o.trim()),
+    // Ademas de CORS_ORIGINS se acepta cualquier dispositivo de la red del taller,
+    // para no tener que editar .env cada vez que cambie la IP del servidor.
+    origin: (origen: string | undefined, callback: (error: Error | null, permitir?: boolean) => void) =>
+      callback(null, !origen || origenesPermitidos.includes(origen) || ORIGEN_RED_LOCAL.test(origen)),
   });
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true, transform: true }));
 
