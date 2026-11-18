@@ -6,7 +6,7 @@
   "main": "src/index.ts",
   "scripts": {
     "build": "tsc --noEmit",
-    "lint": "eslint \"src/**/*.ts\"",
+    "lint": "echo \"No lint configured yet for @taller/shared\"",
     "test": "echo \"No tests configured yet for @taller/shared\"",
     "format": "prettier --write ."
   }

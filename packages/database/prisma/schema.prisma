@@ -7,3 +7,55 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Rol {
+  ADMIN
+  TECNICO
+}
+
+model Usuario {
+  id            String   @id @default(uuid())
+  email         String   @unique
+  nombre        String
+  passwordHash  String
+  rol           Rol      @default(TECNICO)
+  activo        Boolean  @default(true)
+  creadoEn      DateTime @default(now())
+  actualizadoEn DateTime @updatedAt
+
+  @@map("usuarios")
+}
+
+model Cliente {
+  id            String     @id @default(uuid())
+  nombre        String
+  telefono      String?
+  email         String?
+  direccion     String?
+  rfc           String?
+  notas         String?
+  vehiculos     Vehiculo[]
+  creadoEn      DateTime   @default(now())
+  actualizadoEn DateTime   @updatedAt
+
+  @@index([nombre])
+  @@map("clientes")
+}
+
+model Vehiculo {
+  id            String   @id @default(uuid())
+  clienteId     String
+  cliente       Cliente  @relation(fields: [clienteId], references: [id], onDelete: Restrict)
+  marca         String
+  modelo        String
+  anio          Int?
+  placas        String   @unique
+  vin           String?  @unique
+  color         String?
+  kilometraje   Int?
+  notas         String?
+  creadoEn      DateTime @default(now())
+  actualizadoEn DateTime @updatedAt
+
+  @@index([clienteId])
+  @@map("vehiculos")
+}

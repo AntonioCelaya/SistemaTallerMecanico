@@ -2,3 +2,12 @@ packages:
   - "apps/*"
   - "packages/*"
 
+# Dependencias autorizadas a ejecutar scripts de instalacion
+allowBuilds:
+  "@prisma/client": true
+  "@prisma/engines": true
+  "@nestjs/core": true
+  esbuild: true
+  prisma: true
+  sharp: true
+  unrs-resolver: true

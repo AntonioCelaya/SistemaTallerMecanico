@@ -185,18 +185,48 @@ SistemaTallerMecanico/
 6. Actualizar el servidor local del taller con Docker Compose.
 7. Actualizar clientes de escritorio y Android desde el canal de releases.
 
-## Comandos Previstos
+## Como Ejecutarlo En Desarrollo
 
-Estos comandos quedaran activos cuando instalemos dependencias y generemos las aplicaciones reales:
+Requisitos: Node.js 24 o superior, pnpm 11 y Docker Desktop.
+
+1. Crear `.env` a partir de `.env.example` y reemplazar todos los valores `replace-with-...`.
+   La contrasena de `POSTGRES_PASSWORD` debe coincidir con la que aparece dentro de `DATABASE_URL`.
+2. Levantar PostgreSQL:
+
+   ```bash
+   pnpm docker:up
+   ```
+
+3. Instalar dependencias, aplicar migraciones y crear el usuario administrador:
+
+   ```bash
+   pnpm setup
+   ```
+
+4. Arrancar la API y la web:
+
+   ```bash
+   pnpm dev
+   ```
+
+- Web: http://localhost:3000 (iniciar sesion con `SEED_ADMIN_EMAIL` / `SEED_ADMIN_PASSWORD`)
+- API: http://localhost:4000 (comprobacion de salud en `/health`)
+
+Desde otro dispositivo de la red se entra con la IP del servidor, por ejemplo `http://192.168.1.50:3000`.
+Esa direccion debe agregarse a `CORS_ORIGINS` en `.env`.
+
+## Comandos
 
 ```bash
-pnpm install
-pnpm dev
-pnpm build
-pnpm lint
-pnpm test
-pnpm docker:up
-pnpm docker:down
+pnpm dev           # API + web en modo desarrollo
+pnpm build         # Compila todos los paquetes
+pnpm lint          # Revision de tipos
+pnpm docker:up     # Levanta PostgreSQL
+pnpm docker:down   # Detiene los contenedores
+pnpm db:migrate    # Crea una migracion nueva tras cambiar schema.prisma
+pnpm db:deploy     # Aplica migraciones pendientes (servidor del taller)
+pnpm db:seed       # Crea el usuario administrador si no existe
+pnpm db:studio     # Explorador visual de la base de datos
 ```
 
 ## Variables De Entorno
@@ -207,5 +237,14 @@ Nunca se deben subir secretos reales al repositorio.
 
 ## Estado Actual
 
-Scaffold inicial del repositorio. Todavia no se han generado las aplicaciones con sus CLIs ni instalado dependencias.
+Prototipo inicial funcional:
+
+- Base de datos: usuarios con roles, clientes y vehiculos (Prisma 6 + PostgreSQL), con migracion inicial.
+- API: inicio de sesion con JWT, roles `ADMIN` y `TECNICO`, y altas, consultas, cambios y bajas de clientes y vehiculos.
+  Solo un administrador puede eliminar registros y gestionar usuarios.
+- Web: inicio de sesion, panel con totales, clientes (busqueda, alta, detalle y edicion), vehiculos y usuarios.
+  Se compila como sitio estatico (`output: "export"`) para reutilizarse despues en Capacitor y Tauri.
+
+Pendiente: ordenes de trabajo, cotizaciones, presupuestos, facturas, reportes, empleados, proveedores,
+Dockerfiles de API y web, y las envolturas Android y escritorio.
 
