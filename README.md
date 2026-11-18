@@ -231,9 +231,44 @@ una red privada entre los dispositivos autorizados:
 La API ya acepta las direcciones de Tailscale (100.64.0.0/10 y `*.ts.net`). La red Tailscale aparece en Windows como
 red **Privada**, asi que Node.js debe estar permitido en el firewall tambien para redes privadas.
 
+### Modo produccion
+
+Para uso real (y obligatorio si el sistema se publica en internet) se usa el modo produccion,
+que sirve la web ya compilada con cabeceras de seguridad y no expone herramientas de desarrollo:
+
+```bash
+pnpm start
+```
+
+### Enlace publico (Tailscale Funnel)
+
+Permite entrar desde cualquier navegador sin instalar nada, en `https://<servidor>.<tailnet>.ts.net`.
+Con el sistema corriendo en modo produccion:
+
+```bash
+tailscale funnel --bg --set-path /api http://127.0.0.1:4000
+tailscale funnel --bg http://127.0.0.1:3000
+```
+
+Para dejar de publicarlo: `tailscale funnel reset`.
+
+## Seguridad
+
+- Contrasenas cifradas con bcrypt; minimo 10 caracteres con letras y numeros.
+- Maximo 10 intentos de login por minuto por IP y bloqueo de la cuenta 15 minutos tras 5 intentos fallidos.
+- La respuesta de login tarda lo mismo exista o no el correo, para no revelar que cuentas existen.
+- Desactivar un usuario o cambiar su contrasena cierra al instante todas sus sesiones.
+- Cabeceras de seguridad en API (helmet) y web (CSP, X-Frame-Options, nosniff, etc.).
+- PostgreSQL y pgAdmin solo escuchan en la PC servidor (127.0.0.1), nunca en la red.
+- `.env` contiene los secretos y no se sube al repositorio.
+
+Recomendaciones: usar contrasenas unicas, desactivar a quien ya no trabaje en el taller,
+mantener Windows actualizado y hacer respaldos periodicos de la base de datos.
+
 ## Comandos
 
 ```bash
+pnpm start         # API + web en modo produccion
 pnpm dev           # API + web en modo desarrollo
 pnpm build         # Compila todos los paquetes
 pnpm lint          # Revision de tipos

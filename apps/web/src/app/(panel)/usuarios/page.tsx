@@ -35,6 +35,17 @@ export default function UsuariosPage() {
     }
   }
 
+  async function cambiarEstado(u: Usuario) {
+    const accion = u.activo ? "Desactivar" : "Activar";
+    if (!confirm(`${accion} a ${u.nombre}?${u.activo ? " Su sesion se cerrara de inmediato." : ""}`)) return;
+    try {
+      await api(`/usuarios/${u.id}`, { method: "PATCH", body: { activo: !u.activo } });
+      cargar();
+    } catch (e) {
+      setError((e as Error).message);
+    }
+  }
+
   if (sesion.rol !== "ADMIN") return <Aviso mensaje="Solo los administradores pueden ver esta seccion." />;
 
   return (
@@ -50,6 +61,7 @@ export default function UsuariosPage() {
               <th>Correo</th>
               <th>Rol</th>
               <th>Estado</th>
+              <th />
             </tr>
           </thead>
           <tbody>
@@ -59,6 +71,13 @@ export default function UsuariosPage() {
                 <td>{u.email}</td>
                 <td>{ETIQUETAS_ROL[u.rol]}</td>
                 <td>{u.activo ? "Activo" : "Inactivo"}</td>
+                <td className="text-right">
+                  {u.id !== sesion.id && (
+                    <button className="boton-secundario" onClick={() => cambiarEstado(u)}>
+                      {u.activo ? "Desactivar" : "Activar"}
+                    </button>
+                  )}
+                </td>
               </tr>
             ))}
           </tbody>
@@ -77,8 +96,8 @@ export default function UsuariosPage() {
             <input className="campo" name="email" type="email" required />
           </div>
           <div>
-            <label className="etiqueta">Contrasena * (minimo 8 caracteres)</label>
-            <input className="campo" name="password" type="password" required minLength={8} autoComplete="new-password" />
+            <label className="etiqueta">Contrasena * (minimo 10 caracteres, con letras y numeros)</label>
+            <input className="campo" name="password" type="password" required minLength={10} autoComplete="new-password" />
           </div>
           <div>
             <label className="etiqueta">Rol *</label>

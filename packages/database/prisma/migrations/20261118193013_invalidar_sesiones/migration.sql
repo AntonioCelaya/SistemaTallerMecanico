@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "usuarios" ADD COLUMN     "sesionesValidasDesde" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP;

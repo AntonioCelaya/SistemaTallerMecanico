@@ -13,6 +13,7 @@
     "dev": "pnpm --filter @taller/database build && pnpm --filter @taller/api --filter @taller/web --parallel dev",
     "setup": "pnpm install && pnpm --filter @taller/database build && pnpm db:deploy && pnpm db:seed",
     "build": "pnpm -r --filter \"!@taller/mobile\" --filter \"!@taller/desktop\" build",
+    "start": "pnpm build && pnpm db:deploy && pnpm --filter @taller/api --filter @taller/web --parallel start",
     "lint": "pnpm -r lint",
     "test": "pnpm -r test",
     "format": "pnpm -r format",

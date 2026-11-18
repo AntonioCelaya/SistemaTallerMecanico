@@ -1,8 +1,9 @@
 import { Body, Controller, Get, HttpCode, Post } from "@nestjs/common";
 import { Throttle } from "@nestjs/throttler";
-import { IsEmail, IsString, MinLength } from "class-validator";
+import { IsEmail, IsString, MaxLength, MinLength } from "class-validator";
 import { AuthService } from "./auth.service";
 import { Public, SesionUsuario, UsuarioActual } from "./decorators";
+import { ContrasenaSegura } from "./password";
 
 class LoginDto {
   @IsEmail()
@@ -10,7 +11,17 @@ class LoginDto {
 
   @IsString()
   @MinLength(1)
+  @MaxLength(200)
   password: string;
+}
+
+class CambiarPasswordDto {
+  @IsString()
+  @MaxLength(200)
+  actual: string;
+
+  @ContrasenaSegura()
+  nueva: string;
 }
 
 @Controller("auth")
@@ -29,5 +40,12 @@ export class AuthController {
   @Get("me")
   me(@UsuarioActual() usuario: SesionUsuario) {
     return { id: usuario.sub, email: usuario.email, nombre: usuario.nombre, rol: usuario.rol };
+  }
+
+  @Throttle({ default: { ttl: 60_000, limit: 10 } })
+  @Post("cambiar-password")
+  @HttpCode(200)
+  cambiarPassword(@UsuarioActual() usuario: SesionUsuario, @Body() dto: CambiarPasswordDto) {
+    return this.auth.cambiarPassword(usuario.sub, dto.actual, dto.nueva);
   }
 }

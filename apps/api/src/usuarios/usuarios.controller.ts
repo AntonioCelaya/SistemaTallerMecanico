@@ -1,8 +1,20 @@
-import { Body, ConflictException, Controller, Get, Post } from "@nestjs/common";
+import {
+  BadRequestException,
+  Body,
+  ConflictException,
+  Controller,
+  Get,
+  NotFoundException,
+  Param,
+  ParseUUIDPipe,
+  Patch,
+  Post,
+} from "@nestjs/common";
 import { Rol } from "@taller/database";
 import bcrypt from "bcryptjs";
-import { IsEmail, IsEnum, IsString, MinLength } from "class-validator";
-import { Roles } from "../auth/decorators";
+import { IsBoolean, IsEmail, IsEnum, IsOptional, IsString, MaxLength, MinLength } from "class-validator";
+import { Roles, SesionUsuario, UsuarioActual } from "../auth/decorators";
+import { ContrasenaSegura } from "../auth/password";
 import { PrismaService } from "../prisma/prisma.service";
 
 class CrearUsuarioDto {
@@ -11,14 +23,24 @@ class CrearUsuarioDto {
 
   @IsString()
   @MinLength(2)
+  @MaxLength(100)
   nombre: string;
 
-  @IsString()
-  @MinLength(8)
+  @ContrasenaSegura()
   password: string;
 
   @IsEnum(Rol)
   rol: Rol;
+}
+
+class ActualizarUsuarioDto {
+  @IsOptional()
+  @IsBoolean()
+  activo?: boolean;
+
+  @IsOptional()
+  @IsEnum(Rol)
+  rol?: Rol;
 }
 
 const camposPublicos = { id: true, email: true, nombre: true, rol: true, activo: true, creadoEn: true };
@@ -40,8 +62,23 @@ export class UsuariosController {
       throw new ConflictException("Ya existe un usuario con ese correo");
     }
     return this.prisma.usuario.create({
-      data: { email, nombre: dto.nombre, rol: dto.rol, passwordHash: await bcrypt.hash(dto.password, 10) },
+      data: { email, nombre: dto.nombre, rol: dto.rol, passwordHash: await bcrypt.hash(dto.password, 12) },
       select: camposPublicos,
     });
+  }
+
+  @Patch(":id")
+  async actualizar(
+    @Param("id", ParseUUIDPipe) id: string,
+    @Body() dto: ActualizarUsuarioDto,
+    @UsuarioActual() sesion: SesionUsuario,
+  ) {
+    if (id === sesion.sub && (dto.activo === false || (dto.rol && dto.rol !== Rol.ADMIN))) {
+      throw new BadRequestException("No puedes desactivarte ni quitarte el rol de administrador");
+    }
+    if (!(await this.prisma.usuario.findUnique({ where: { id } }))) {
+      throw new NotFoundException("Usuario no encontrado");
+    }
+    return this.prisma.usuario.update({ where: { id }, data: dto, select: camposPublicos });
   }
 }

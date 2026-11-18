@@ -20,6 +20,7 @@ const enlaces = [
   { href: "/clientes", texto: "Clientes" },
   { href: "/vehiculos", texto: "Vehiculos" },
   { href: "/usuarios", texto: "Usuarios", soloAdmin: true },
+  { href: "/cuenta", texto: "Mi cuenta" },
 ];
 
 export default function PanelLayout({ children }: { children: React.ReactNode }) {

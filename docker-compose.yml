@@ -6,9 +6,10 @@ services:
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-taller_mecanico}
       POSTGRES_USER: ${POSTGRES_USER:-taller_user}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-taller_password}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Define POSTGRES_PASSWORD en .env}
     ports:
-      - "${POSTGRES_PORT:-5432}:5432"
+      # Solo accesible desde esta PC: la base de datos nunca debe quedar expuesta en la red.
+      - "127.0.0.1:${POSTGRES_PORT:-5432}:5432"
     volumes:
       # PostgreSQL 18+ guarda los datos en un subdirectorio por version dentro de /var/lib/postgresql
       - postgres-data:/var/lib/postgresql
@@ -26,9 +27,9 @@ services:
       - tools
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-admin@taller.local}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:?Define PGADMIN_DEFAULT_PASSWORD en .env}
     ports:
-      - "5050:80"
+      - "127.0.0.1:5050:80"
     volumes:
       - pgadmin-data:/var/lib/pgadmin
     depends_on:

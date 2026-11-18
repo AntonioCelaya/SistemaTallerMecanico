@@ -13,14 +13,20 @@ enum Rol {
 }
 
 model Usuario {
-  id            String   @id @default(uuid())
-  email         String   @unique
-  nombre        String
-  passwordHash  String
-  rol           Rol      @default(TECNICO)
-  activo        Boolean  @default(true)
-  creadoEn      DateTime @default(now())
-  actualizadoEn DateTime @updatedAt
+  id                   String    @id @default(uuid())
+  email                String    @unique
+  nombre               String
+  passwordHash         String
+  rol                  Rol       @default(TECNICO)
+  activo               Boolean   @default(true)
+  /// Intentos de login fallidos seguidos; se reinicia al entrar correctamente.
+  intentosFallidos     Int       @default(0)
+  /// Si tiene fecha futura, la cuenta esta bloqueada temporalmente.
+  bloqueadoHasta       DateTime?
+  /// Las sesiones iniciadas antes de esta fecha dejan de ser validas.
+  sesionesValidasDesde DateTime  @default(now())
+  creadoEn             DateTime  @default(now())
+  actualizadoEn        DateTime  @updatedAt
 
   @@map("usuarios")
 }

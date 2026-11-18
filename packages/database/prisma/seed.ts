@@ -21,7 +21,7 @@ async function main() {
     data: {
       email,
       nombre: "Administrador",
-      passwordHash: await bcrypt.hash(password, 10),
+      passwordHash: await bcrypt.hash(password, 12),
       rol: Rol.ADMIN,
     },
   });

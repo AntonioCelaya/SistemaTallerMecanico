@@ -8,6 +8,7 @@ import "reflect-metadata";
 import { ValidationPipe } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import { NestExpressApplication } from "@nestjs/platform-express";
+import helmet from "helmet";
 import { AppModule } from "./app.module";
 
 // Direcciones privadas de red local (192.168.x.x, 10.x.x.x, 172.16-31.x.x)
@@ -20,6 +21,10 @@ async function bootstrap() {
   // Detras del enlace publico las peticiones llegan desde el proxy local;
   // asi la IP real del visitante (X-Forwarded-For) se usa para el limite de intentos.
   app.set("trust proxy", "loopback");
+  // Cabeceras de seguridad estandar (sin X-Powered-By, nosniff, HSTS, etc.).
+  app.use(helmet());
+  // Las peticiones de la app son JSON pequenos; se rechaza cualquier cuerpo excesivo.
+  app.useBodyParser("json", { limit: "100kb" });
 
   const origenesPermitidos = (process.env.CORS_ORIGINS ?? "http://localhost:3000").split(",").map((o) => o.trim());
   app.enableCors({
