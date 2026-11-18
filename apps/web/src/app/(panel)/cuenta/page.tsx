@@ -54,7 +54,7 @@ export default function CuentaPage() {
         </p>
       </div>
 
-      <form onSubmit={cambiar} className="tarjeta space-y-3">
+      <form method="post" onSubmit={cambiar} className="tarjeta space-y-3">
         <h2 className="font-semibold">Cambiar contrasena</h2>
         <label className="block">
           <span className="etiqueta">Contrasena actual</span>

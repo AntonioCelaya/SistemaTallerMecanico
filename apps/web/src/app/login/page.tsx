@@ -31,7 +31,7 @@ export default function LoginPage() {
 
   return (
     <main className="flex min-h-screen items-center justify-center p-4">
-      <form onSubmit={entrar} className="tarjeta w-full max-w-sm space-y-4 p-6">
+      <form method="post" onSubmit={entrar} className="tarjeta w-full max-w-sm space-y-4 p-6">
         <div>
           <h1 className="text-xl font-semibold">Taller Mecanico</h1>
           <p className="text-sm text-slate-500">Inicia sesion para continuar</p>

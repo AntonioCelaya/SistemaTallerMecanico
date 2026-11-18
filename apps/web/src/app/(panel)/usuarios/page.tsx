@@ -86,7 +86,7 @@ export default function UsuariosPage() {
 
       <section className="tarjeta space-y-3">
         <h2 className="font-semibold">Nuevo usuario</h2>
-        <form onSubmit={crear} className="grid gap-3 sm:grid-cols-2">
+        <form method="post" onSubmit={crear} className="grid gap-3 sm:grid-cols-2">
           <div>
             <label className="etiqueta">Nombre *</label>
             <input className="campo" name="nombre" required minLength={2} />
