@@ -240,6 +240,9 @@ que sirve la web ya compilada con cabeceras de seguridad y no expone herramienta
 pnpm start
 ```
 
+En Windows tambien se puede iniciar con doble clic en `scripts\iniciar-sistema.cmd`: abre Docker Desktop si hace falta,
+levanta la base de datos y arranca el sistema. Funciona aunque la terminal no reconozca `pnpm`.
+
 ### Enlace publico (Tailscale Funnel)
 
 Permite entrar desde cualquier navegador sin instalar nada, en `https://<servidor>.<tailnet>.ts.net`.
